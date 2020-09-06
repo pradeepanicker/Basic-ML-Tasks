@@ -1,0 +1,154 @@
+---
+title: "TASK 1- GRIP"
+author: "Pradeep"
+date: "8/19/2020"
+output: pdf_document
+---
+```{r}
+library(caret)
+library(caTools)
+library(rpart)
+library(gmodels)
+library(plyr)
+library(dplyr)
+library(DMwR)
+library(ggplot2)
+library(arules)
+library(RColorBrewer)
+library(arulesViz)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+# Data is imported using the 'Import Dataset' tab
+
+# the working directory is created 
+
+setwd('C:/Users/PRADEEP PANICKER/OneDrive/Desktop/BABI/INTERNSHIPS/SPARK Foundation/TASK 3')
+read.csv(Iris.csv, header = TRUE)
+
+# Verify if all Data Fields are Imported
+dim(Iris) 
+# Verify if the class of each coloumn is as desired for statistical evaluation.
+str(Iris)
+# Verify the MIN-MAX Values & Check if any NAs present in dataset.
+summary(Iris)
+
+# scaling data set to attain uniformity in variable data definition. This is since 
+# clustering is done with calculating the distance of different data points to each other.
+# If the data value is not scaled to UNIFORMITY [ for eg. - One column has data in the rage of 1 ~ 10 and the next     
+# column has data in the range of 0 ~ 1] the distance calculated between the points of such two coloumns/ variables will # be FALSE-LEADING for statistical measures.
+
+
+Iris1 = Iris
+
+Iris1= Iris1[,c(-1,-6)]
+
+str(Iris3)
+Iris3$Species= as.factor(Iris3$Species)
+summary(Iris3$Species)
+
+Iris2 =as.data.frame(scale(Iris1))
+
+Iris3= cbind(Iris2, Iris[,c(1,6)])
+
+
+write.csv(Iris3, file ='C:/Users/PRADEEP PANICKER/OneDrive/Desktop/BABI/INTERNSHIPS/SPARK Foundation/TASK 3/Iris3.csv')
+
+Iris4= read.csv(file ='C:/Users/PRADEEP PANICKER/OneDrive/Desktop/BABI/INTERNSHIPS/SPARK Foundation/TASK 3/Iris4.csv', header = TRUE)
+
+Iris4= Iris4[, c(-1,-7)]
+
+str(Iris4)
+colSums(is.na(Iris4))
+rowSums(is.na(Iris4))
+
+# Two types of Clustering exist - (1) HIRARCHIAL Clustering & (2) K-Means CLUSTERING
+
+# HIRARCHIAL Clustering -
+# Euclidean Distance measuring between data points is the method adopted in Hirarchial Clustering. Since this method adapts calculation on distance usually this method is ustilised for clustering small data - MAXIMUM 500 Rows/ Observations.
+
+#First we generate the distrance matrix for the data set-
+
+d.euclidean= dist(x= Iris4[,1:4], method = 'euclidean')
+print(d.euclidean, digits=3)
+
+# The Clustering is Formed based on the Distance Matrix created and a Dendrogram is plotted identifying the cluster tree -
+
+irishclust= hclust(d.euclidean, method = 'average')
+plot(irishclust, labels = as.character(Iris4[,6]))
+
+#Now we cut the cluster dendrogram into THREE CLUSTERS - whhich is identified with RED Rectangular borders -
+
+plot(irishclust, labels = as.character(Iris4[,6]))
+rect.hclust(irishclust, k=3, border = 'red')
+
+# Profiling of Clusters / Attache the generated clusters with the NAME in the data -
+
+Iris4= cbind(Iris4, Iris[,c(6)])
+
+# Create a vector with called 'groups' which has identifed 150 observations into Cluster groups by numbers -
+
+groups= cutree(irishclust, k=3)
+
+#create new dataset by joining the basic dataset with the coloumn identifying each row to each cluster -
+
+Iris5= cbind(Iris,groups)
+
+# Dataset is aggregates w.r.t. cluster identification number -
+
+aggrIris= aggregate(Iris5[,c(2:5)],list(Iris5$groups),mean)
+head(aggrIris)
+
+# Tabulated form of cluster , tabulated w.r.t. the mean value of each variable.
+
+clus.profiling= data.frame(Group= aggrIris[,1],Freq= as.vector(table(Iris5$groups)),aggrIris[-1])
+
+# Clusters , if analysed, here is formed based on the SIZE of the FLOWER. 
+#Cluster 1 is with the SMALLEST FLOWER - FIFTY IN Numbers - Smallest Petal Length & Sepal Length
+# CLuster 2 is the MEDIUM SIZED FLOWER - NINTY SEVEN in Numbers - PETAL Length & Sepal Length larger than the smallest one.
+# Cluster 3 has the LARGEST FLOWERS of the complete 150 Flowers - THREE NUMBERS - having PETAL Length and SEPAL Length to its maximum. 
+
+
+# Visualisation - of the data graphically
+
+attach(Iris5)
+
+Iris5$groups= as.factor(Iris5$groups)
+ggplot(data = Iris5, aes( x= groups, y= SepalLengthCm, fill= groups))+ geom_boxplot()
+ggplot(data = Iris5, aes( x= groups, y= SepalWidthCm, fill= groups))+ geom_boxplot()
+ggplot(data = Iris5, aes( x= groups, y= PetalLengthCm, fill= groups))+ geom_boxplot()
+ggplot(data = Iris5, aes( x= groups, y= PetalWidthCm, fill= groups))+ geom_boxplot()
+
+# Each plot shows the spread of complete range of each factor - Petal Width/ Petal Length/ Sepal Width/ Sepal Length - over the THREE Clusters.
+
+```
+
+
+```{r setup, include=FALSE}
+
+#K-Means Clustering -
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
