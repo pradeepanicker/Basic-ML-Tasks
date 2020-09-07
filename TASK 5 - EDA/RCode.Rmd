@@ -1,0 +1,50 @@
+---
+title: "TASK 5 - EDA for SPARK FOUND."
+author: "Pradeep"
+date: "9/7/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd('C:/Users/PRADEEP PANICKER/OneDrive/Desktop/BABI/INTERNSHIPS/SPARK Foundation/TASK 5 - BABI')
+store= read.csv('SampleSuperstore.csv', header = TRUE)
+dim(store)
+str(store)
+summary(store)
+
+```
+```{r}
+library(readr)
+library(caret)
+library(caTools)
+library(rpart)
+library(gmodels)
+library(plyr)
+library(dplyr)
+library(DMwR)
+library(ggplot2)
+library(arules)
+library(RColorBrewer)
+library(arulesViz)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
